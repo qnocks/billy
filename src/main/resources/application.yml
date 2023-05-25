@@ -1,0 +1,29 @@
+server:
+  port: 8090
+  ssl:
+    enabled: true
+    key-store: classpath:qnocks.p12
+    key-store-password: qnocks
+    key-store-type: PKCS12
+    key-alias: qnocks
+spring:
+  application:
+    name: billy-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/billy
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+payment:
+  yookassa:
+    shopId: 320122
+    apiKey: test_9zzl_LadkLTDzY12M4IhUzUyzSDkNrL8ltNxsxALI5M
