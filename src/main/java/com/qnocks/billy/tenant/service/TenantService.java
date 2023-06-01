@@ -6,5 +6,5 @@ import com.qnocks.billy.tenant.dto.TenantDto;
 public interface TenantService {
 
     TenantDto createTenant(CreateTenantDto tenantDto);
-    TenantDto getById(Long id);
+    TenantDto getById(String id);
 }

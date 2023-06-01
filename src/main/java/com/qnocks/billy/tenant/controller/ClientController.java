@@ -1,5 +1,7 @@
 package com.qnocks.billy.tenant.controller;
 
+import com.qnocks.billy.core.aop.InboundRequest;
+import com.qnocks.billy.core.aop.TenantId;
 import com.qnocks.billy.tenant.dto.ClientDto;
 import com.qnocks.billy.tenant.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,13 +26,15 @@ public class ClientController {
 
     @Operation(summary = "Get a client", description = "Retrieve client info by provided id")
     @GetMapping("{id}")
-    public ClientDto getClient(@PathVariable Long id) {
-        return clientService.getById(id);
+    @InboundRequest
+    public ClientDto getClient(@PathVariable Long id, @RequestParam @TenantId String tenantId) {
+        return clientService.getById(id, tenantId);
     }
 
     @Operation(summary = "Get clients", description = "Retrieve all tenant's clients by tenant ID")
     @GetMapping
-    public List<ClientDto> getClients(@RequestParam("tenant_id") Long tenantId) {
+    @InboundRequest
+    public List<ClientDto> getClients(@RequestParam @TenantId String tenantId) {
         return clientService.getClientsByTenantId(tenantId);
     }
 }

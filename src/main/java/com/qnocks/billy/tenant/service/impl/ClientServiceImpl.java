@@ -23,10 +23,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDto getById(Long id) {
-        var client = clientRepository.findById(id).orElseThrow(() -> TenantException.builder()
-                .message(String.format("cannot find Client with id [%d]", id))
-                .build());
+    public ClientDto getById(Long id, String tenantId) {
+        var client = clientRepository.findByIdAndTenantId(id, tenantId).orElseThrow(
+                () -> TenantException.builder().message(String.format("cannot find Client with id [%d]", id)).build());
 
         return ClientDto.builder()
                 .id(client.getId())
@@ -37,7 +36,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientDto> getClientsByTenantId(Long tenantId) {
+    public List<ClientDto> getClientsByTenantId(String tenantId) {
         return clientRepository.findAllByTenantId(tenantId).stream().map(client -> ClientDto.builder()
                 .id(client.getId())
                 .name(client.getName())

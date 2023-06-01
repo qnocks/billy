@@ -43,8 +43,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getById(Long id) {
-        var product = getProduct(id);
+    public ProductDto getById(Long id, String tenantId) {
+        var product = getProduct(id, tenantId);
 
         return ProductDto.builder()
                 .id(product.getId())
@@ -58,9 +58,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(Long id, CreateProductDto productDto) {
-        var existingProduct = getProduct(id);
-        var tenant = getTenant(productDto.getTenantId());
+    public ProductDto updateProduct(Long id, CreateProductDto productDto, String tenantId) {
+        var existingProduct = getProduct(id, tenantId);
+        var tenant = getTenant(tenantId);
 
         existingProduct.setName(productDto.getName());
         existingProduct.setDefinition(productDto.getDefinition());
@@ -79,16 +79,16 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
-    private Product getProduct(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> ProductException.builder()
+    private Product getProduct(Long id, String tenantId) {
+        return productRepository.findByIdAndTenantId(id, tenantId).orElseThrow(() -> ProductException.builder()
                 .message(String.format("cannot find Product with id [%d]", id))
                 .status(HttpStatus.NOT_FOUND)
                 .build());
     }
 
-    private Tenant getTenant(Long id) {
+    private Tenant getTenant(String id) {
         return tenantRepository.findById(id).orElseThrow(() -> TenantException.builder()
-                .message(String.format("cannot find Tenant with id [%d]", id))
+                .message(String.format("cannot find Tenant with id [%s]", id))
                 .status(HttpStatus.NOT_FOUND)
                 .build());
     }

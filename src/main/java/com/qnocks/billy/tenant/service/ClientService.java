@@ -8,8 +8,8 @@ import java.util.List;
 public interface ClientService {
 
     ClientDto updateClient(UpdateClientDto clientDto);
-    ClientDto getById(Long id);
+    ClientDto getById(Long id, String tenantId);
 
-    List<ClientDto> getClientsByTenantId(Long tenantId);
+    List<ClientDto> getClientsByTenantId(String tenantId);
     // TODO: пополнитьБаланс(), списатьБаланс(), заблокировать()
 }
