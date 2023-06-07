@@ -24,7 +24,7 @@ public class TenantInterceptor {
 
     // TODO: for now this feature with TenantContext is useless,
     //  because I pass tenantId to service layer with specified repository methods
-    @Around("@annotation(InboundRequest)")
+    @Around("@annotation(com.qnocks.billy.core.aop.TenantRelatedRequest)")
     public Object logInboundRequest(ProceedingJoinPoint joinPoint) throws Throwable {
         var tenantId = extractTenantId(joinPoint).orElseThrow(() -> TenantException.builder()
                 .message("cannot find Tenant with provided id")
@@ -56,5 +56,4 @@ public class TenantInterceptor {
         }
         return empty();
     }
-
 }

@@ -8,10 +8,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Periodicity {
 
+    ONETIME(0),
     DAY(1),
     WEEK(7),
     MONTH(30),
     YEAR(365);
+
 
     private final int value;
 }

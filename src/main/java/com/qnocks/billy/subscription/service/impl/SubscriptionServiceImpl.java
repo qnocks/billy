@@ -69,12 +69,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .product(product)
                 .tenant(tenant)
                 .start(LocalDate.parse(subscriptionDto.getStartDate()))
+                .next(LocalDate.parse(subscriptionDto.getStartDate()))
                 .periodicity(Periodicity.valueOf(subscriptionDto.getPeriod()))
                 .status(SubscriptionStatus.ACTIVE)
                 .discount(subscriptionDto.getDiscount())
                 .discountType(DiscountType.valueOf(subscriptionDto.getDiscountType()))
                 .build();
-        subscription.setNext(subscription.getStart().plusDays(subscription.getPeriodicity().getValue()));
         subscription.setPrice(getTotalPrice(product, subscription));
 
         subscriptionRepository.saveAndFlush(subscription);

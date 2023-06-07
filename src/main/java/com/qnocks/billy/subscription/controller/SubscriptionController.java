@@ -1,6 +1,6 @@
 package com.qnocks.billy.subscription.controller;
 
-import com.qnocks.billy.core.aop.InboundRequest;
+import com.qnocks.billy.core.aop.TenantRelatedRequest;
 import com.qnocks.billy.core.aop.TenantId;
 import com.qnocks.billy.subscription.dto.CreateSubscriptionDto;
 import com.qnocks.billy.subscription.dto.SubscriptionDto;
@@ -30,7 +30,7 @@ SubscriptionController {
 
     @Operation(summary = "Create a subscription", description = "Create new tenant's subscription")
     @PostMapping
-    @InboundRequest
+    @TenantRelatedRequest
     public SubscriptionDto createSubscription(@RequestBody CreateSubscriptionDto subscriptionDto,
                                               @RequestParam @TenantId String tenantId) {
         return subscriptionService.createSubscription(subscriptionDto, tenantId);
@@ -38,14 +38,14 @@ SubscriptionController {
 
     @Operation(summary = "Get the subscription", description = "Retrieve subscription info by provided id")
     @GetMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public SubscriptionDto getSubscription(@PathVariable Long id, @RequestParam @TenantId String tenantId) {
         return subscriptionService.getById(id, tenantId);
     }
 
     @Operation(summary = "Update the subscription", description = "Update subscription info")
     @PutMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public SubscriptionDto updateSubscription(
             @PathVariable Long id,
             @RequestBody CreateSubscriptionDto subscriptionDto,
@@ -55,21 +55,21 @@ SubscriptionController {
 
     @Operation(summary = "Cancel the subscription", description = "Cancel specific subscription")
     @PatchMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public void cancelSubscription(@PathVariable Long id, @RequestParam @TenantId String tenantId) {
         subscriptionService.cancel(id, tenantId);
     }
 
     @Operation(summary = "Activate the subscription", description = "Activate specific subscription")
     @PostMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public void activateSubscription(@PathVariable Long id, @RequestParam @TenantId String tenantId) {
         subscriptionService.activate(id, tenantId);
     }
 
     @Operation(summary = "Delete the subscription", description = "Delete specific subscription")
     @DeleteMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public void deleteSubscription(@PathVariable Long id, @RequestParam @TenantId String tenantId) {
         subscriptionService.deleteSubscription(id, tenantId);
     }

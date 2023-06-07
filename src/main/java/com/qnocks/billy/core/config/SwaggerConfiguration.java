@@ -12,7 +12,7 @@ public class SwaggerConfiguration {
     @Bean
     public OpenAPI customOpenApi() {
         return new OpenAPI().info(new Info()
-                .title("Billy Service")
+                .title("Billing Service")
                 .version("1.0")
                 .description("Subscription Billing system for SaaS businesses")
                 .contact(new Contact().name("Roman Ostanin").email("roma.ost2012@mail.ru")));

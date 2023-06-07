@@ -3,7 +3,7 @@ package com.qnocks.billy.catalog.controller;
 import com.qnocks.billy.catalog.dto.CreateProductDto;
 import com.qnocks.billy.catalog.dto.ProductDto;
 import com.qnocks.billy.catalog.service.ProductService;
-import com.qnocks.billy.core.aop.InboundRequest;
+import com.qnocks.billy.core.aop.TenantRelatedRequest;
 import com.qnocks.billy.core.aop.TenantId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class ProductController {
 
     @Operation(summary = "Create product", description = "Create new tenant's product to billed")
     @PostMapping
-    @InboundRequest
+    @TenantRelatedRequest
     public ProductDto createProduct(@RequestBody CreateProductDto productDto,
                                     @RequestParam @TenantId String tenantId) {
         return productService.createProduct(productDto);
@@ -35,7 +35,7 @@ public class ProductController {
 
     @Operation(summary = "Get a product", description = "Retrieve product info by provided id")
     @GetMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public ProductDto getProduct(@PathVariable Long id,
                                  @RequestParam @TenantId String tenantId) {
         return productService.getById(id, tenantId);
@@ -43,7 +43,7 @@ public class ProductController {
 
     @Operation(summary = "Update a product", description = "Update product info")
     @PutMapping("{id}")
-    @InboundRequest
+    @TenantRelatedRequest
     public ProductDto updateProduct(@PathVariable Long id,
                                     @RequestBody CreateProductDto productDto,
                                     @RequestParam @TenantId String tenantId) {
