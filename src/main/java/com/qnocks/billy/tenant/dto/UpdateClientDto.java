@@ -14,5 +14,5 @@ public class UpdateClientDto {
     private Long id;
     private String name;
     private String email;
-    private Long tenantId;
+    private String tenantId;
 }

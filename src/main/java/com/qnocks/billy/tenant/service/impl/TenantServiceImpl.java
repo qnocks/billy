@@ -40,9 +40,9 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    public TenantDto getById(Long id) {
+    public TenantDto getById(String id) {
         var tenant = tenantRepository.findById(id).orElseThrow(() -> TenantException.builder()
-                .message(String.format("cannot find Tenant with id [%d]", id))
+                .message(String.format("cannot find Tenant with id [%s]", id))
                 .build());
 
         return TenantDto.builder()

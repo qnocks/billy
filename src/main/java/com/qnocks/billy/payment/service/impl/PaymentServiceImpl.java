@@ -37,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @SneakyThrows
     @Override
-    public boolean  pay(Subscription subscription) {
+    public boolean pay(Subscription subscription) {
         var createPaymentRef = new AtomicReference<CreatePaymentDto>();
         paymentRepository.findFirstBySubscription_IdOrderByCreatedAtDesc(subscription.getId()). ifPresentOrElse(
                 payment -> createPaymentRef.set(buildRecurrentPayment(payment)),
@@ -66,6 +66,8 @@ public class PaymentServiceImpl implements PaymentService {
                         .externalDate(paymentDto.getCreatedAt())
                         .subscription(subscription)
                 .build());
+
+        // TODO: return meaningful status based on API payment response
         return true;
     }
 

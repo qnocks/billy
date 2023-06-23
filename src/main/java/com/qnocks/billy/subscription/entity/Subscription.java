@@ -5,6 +5,7 @@ import com.qnocks.billy.subscription.type.DiscountType;
 import com.qnocks.billy.subscription.type.Periodicity;
 import com.qnocks.billy.subscription.type.SubscriptionStatus;
 import com.qnocks.billy.tenant.entity.Client;
+import com.qnocks.billy.tenant.entity.Tenant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
@@ -35,7 +37,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"product", "client"})
+@ToString(exclude = {"product", "client", "tenant"})
 public class Subscription {
 
     @Id
@@ -49,6 +51,10 @@ public class Subscription {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id")
+    private Tenant tenant;
 
     private LocalDate start;
     private LocalDate next;

@@ -5,10 +5,10 @@ import com.qnocks.billy.subscription.dto.SubscriptionDto;
 
 public interface SubscriptionService {
 
-    SubscriptionDto createSubscription(CreateSubscriptionDto subscriptionDto);
-    SubscriptionDto updateSubscription(Long id, CreateSubscriptionDto subscriptionDto);
-    SubscriptionDto getById(Long id);
-    void cancel(Long id);
-    void activate(Long id);
-    void deleteSubscription(Long id);
+    SubscriptionDto createSubscription(CreateSubscriptionDto subscriptionDto, String tenantId);
+    SubscriptionDto updateSubscription(Long id, CreateSubscriptionDto subscriptionDto, String tenantId);
+    SubscriptionDto getById(Long id, String tenantId);
+    void cancel(Long id, String tenantId);
+    void activate(Long id, String tenantId);
+    void deleteSubscription(Long id, String tenantId);
 }

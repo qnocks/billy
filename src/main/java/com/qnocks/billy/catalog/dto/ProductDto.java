@@ -17,7 +17,7 @@ public class ProductDto {
     private String name;
     private String definition;
     private Double price;
-    private Long tenantId;
+    private String tenantId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

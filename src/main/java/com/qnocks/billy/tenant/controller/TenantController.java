@@ -29,7 +29,7 @@ public class TenantController {
 
     @Operation(summary = "Get a tenant", description = "Retrieve tenant info by provided id")
     @GetMapping("{id}")
-    public TenantDto getTenant(@PathVariable Long id) {
+    public TenantDto getTenant(@PathVariable String id) {
         return tenantService.getById(id);
     }
 }

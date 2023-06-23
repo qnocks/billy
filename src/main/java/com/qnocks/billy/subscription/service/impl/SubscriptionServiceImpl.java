@@ -14,6 +14,7 @@ import com.qnocks.billy.subscription.type.DiscountType;
 import com.qnocks.billy.subscription.type.Periodicity;
 import com.qnocks.billy.subscription.type.SubscriptionStatus;
 import com.qnocks.billy.tenant.repository.ClientRepository;
+import com.qnocks.billy.tenant.repository.TenantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,23 +28,29 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
+    private final TenantRepository tenantRepository;
 
     @Override
-    public SubscriptionDto createSubscription(CreateSubscriptionDto subscriptionDto) {
-        var client = clientRepository.findById(subscriptionDto.getClientId()).orElseThrow(
+    public SubscriptionDto createSubscription(CreateSubscriptionDto subscriptionDto, String tenantId) {
+        var client = clientRepository.findByIdAndTenantId(subscriptionDto.getClientId(), tenantId).orElseThrow(
                 () -> TenantException.builder()
                         .message(String.format("cannot find Client with id [%d]", subscriptionDto.getClientId()))
                         .status(HttpStatus.NOT_FOUND)
                         .build());
 
-        var product = productRepository.findById(subscriptionDto.getProductId()).orElseThrow(
+        var product = productRepository.findByIdAndTenantId(subscriptionDto.getProductId(), tenantId).orElseThrow(
                 () -> ProductException.builder()
                         .message(String.format("cannot find Product with id [%d]", subscriptionDto.getClientId()))
                         .status(HttpStatus.NOT_FOUND)
                         .build());
 
-        subscriptionRepository.findByProduct_IdAndAndClient_Id(product.getId(), client.getId()).ifPresent(
-                subscription -> {
+        var tenant = tenantRepository.findById(tenantId).orElseThrow(() -> TenantException.builder()
+                .message(String.format("cannot find Product with id [%s]", tenantId))
+                .status(HttpStatus.NOT_FOUND)
+                .build());
+
+        subscriptionRepository.findByProductIdAndAndClientIdAndTenantId(product.getId(), client.getId(), tenant.getId())
+                .ifPresent(subscription -> {
                     throw SubscriptionException.builder()
                             .message("Subscription with provided ids already exists")
                             .build();
@@ -60,13 +67,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         var subscription = Subscription.builder()
                 .client(client)
                 .product(product)
+                .tenant(tenant)
                 .start(LocalDate.parse(subscriptionDto.getStartDate()))
+                .next(LocalDate.parse(subscriptionDto.getStartDate()))
                 .periodicity(Periodicity.valueOf(subscriptionDto.getPeriod()))
                 .status(SubscriptionStatus.ACTIVE)
                 .discount(subscriptionDto.getDiscount())
                 .discountType(DiscountType.valueOf(subscriptionDto.getDiscountType()))
                 .build();
-        subscription.setNext(subscription.getStart().plusDays(subscription.getPeriodicity().getValue()));
         subscription.setPrice(getTotalPrice(product, subscription));
 
         subscriptionRepository.saveAndFlush(subscription);
@@ -87,13 +95,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public SubscriptionDto updateSubscription(Long id, CreateSubscriptionDto subscriptionDto) {
+    public SubscriptionDto updateSubscription(Long id, CreateSubscriptionDto subscriptionDto, String tenantId) {
         return null;
     }
 
     @Override
-    public SubscriptionDto getById(Long id) {
-        var subscription = getSubscription(id);
+    public SubscriptionDto getById(Long id, String tenantId) {
+        var subscription = getSubscription(id, tenantId);
 
         return SubscriptionDto.builder()
                 .id(subscription.getId())
@@ -111,22 +119,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public void cancel(Long id) {
-        var subscription = getSubscription(id);
+    public void cancel(Long id, String tenantId) {
+        var subscription = getSubscription(id, tenantId);
         subscription.setStatus(SubscriptionStatus.DISABLE);
         subscriptionRepository.save(subscription);
     }
 
     @Override
-    public void activate(Long id) {
-        var subscription = getSubscription(id);
+    public void activate(Long id, String tenantId) {
+        var subscription = getSubscription(id, tenantId);
         subscription.setStatus(SubscriptionStatus.ACTIVE);
         subscriptionRepository.save(subscription);
     }
 
     @Override
-    public void deleteSubscription(Long id) {
-        subscriptionRepository.deleteById(id);
+    public void deleteSubscription(Long id, String tenantId) {
+        subscriptionRepository.deleteByIdAndTenantId(id, tenantId);
     }
 
     private Double getTotalPrice(Product product, Subscription subscription) {
@@ -137,8 +145,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return product.getPrice() - (product.getPrice() * subscription.getDiscount()) / 100;
     }
 
-    private Subscription getSubscription(Long id) {
-        return subscriptionRepository.findById(id).orElseThrow(() -> SubscriptionException.builder()
+    private Subscription getSubscription(Long id, String tenantId) {
+        return subscriptionRepository.findByIdAndTenantId(id, tenantId).orElseThrow(() -> SubscriptionException.builder()
                 .message(String.format("cannot find Subscription with id [%d]", id))
                 .status(HttpStatus.NOT_FOUND)
                 .build());

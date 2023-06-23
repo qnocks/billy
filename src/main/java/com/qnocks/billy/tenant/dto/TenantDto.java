@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TenantDto {
 
-    private Long id;
+    private String id;
     private String name;
     private String email;
     private LocalDateTime createdAt;
