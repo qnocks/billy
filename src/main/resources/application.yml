@@ -25,5 +25,5 @@ spring:
 
 payment:
   yookassa:
-    shopId: 320122
-    apiKey: test_9zzl_LadkLTDzY12M4IhUzUyzSDkNrL8ltNxsxALI5M
+    shopId: ${YOOKASSA_SHOP_ID}
+    apiKey: ${YOOKASSA_API_KEY}
